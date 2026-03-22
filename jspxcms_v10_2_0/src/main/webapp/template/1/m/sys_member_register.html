@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body class="bg-light">
+<div class="container my-3 my-md-4 my-lg-5">
+    <div class="row justify-content-center">
+        <div class="col col-md-6 col-lg-5 col-xl-5 reg-box">
+            <h3 class="reg-logo text-center"><a href="${ctx}/">jsp<b>XCMS</b></a> 注册</h3>
+            <div class="reg-box-body rounded p-4 mt-4" style="background-color:#fff;border:1px solid #ccc;">
+                <form class="mb-2" id="validForm" action="${ctx}/register" method="POST">
+                    <div class="form-group">
+                        <label class="sr-only" for="username">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="用户名" required title="请填写用户名"
+                               maxlength="${global.register.maxLength}" data-rule-minlength="${global.register.minLength}"
+                               data-rule-pattern="${global.register.validCharacter}" data-msg-pattern="用户名不能使用非法字符"
+                               data-rule-remote='{"url":"${ctx}/check_username","type":"post"}' data-msg-remote="用户名已经存在">
+                        <!--<small class="form-text text-muted">4~18个字符，可使用字母、数字、下划线</small>-->
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="password">密码</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="密码" required title="请填写密码" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="confirmPassword">确认密码</label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="确认密码" required title="请确认密码" data-rule-equalTo="#password" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="email">电子邮箱</label>
+                        <input type="text" class="form-control" id="email" name="email" placeholder="电子邮件" required title="请填写电子邮箱"
+                               data-rule-email="true" data-msg-email="电子邮箱格式不正确">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="sr-only" for="captcha">验证码</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="captcha" name="captcha" placeholder="验证码" autocomplete="off" required
+                                   data-rule-remote='{"url":"${ctx}/captcha","type":"post"}' title="请输入验证码" data-msg-remote="验证码错误">
+                            <div class="input-group-append">
+                                <img id="captchaImg" src="${ctx}/captcha" class="input-group-text" style="cursor:pointer;padding:0;" onclick="this.src='${ctx}/captcha?d='+new Date()*1;$('#captcha').focus();" title="点击重新获取验证码">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">注册</button>
+                </form>
+                <p class="text-center text-muted small">
+                    <span>点击"注册"，代表您同意</span> <a href="javascript:" data-toggle="modal" data-target="#exampleModal">网站服务条款</a>
+                </p>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">网站服务条款</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                [#noescape]${bbcode(global.register.userAgreement!)}[/#noescape]
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">我已阅读并同意</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center text-muted">
+                    <small>----- OR -----</small>
+                </p>
+                <p class="text-center lead">
+                    [#include 'inc_oauth.html'/]
+                </p>
+                <p class="text-center">
+                    <a class="small" href="${ctx}/login">登录</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#validForm').validate();
+        $('#username').focus().select();
+    });
+</script>
+</body>
+</html>
+[/#escape]

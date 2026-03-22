@@ -1,0 +1,127 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>系统消息 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body class="bg-light">
+[#include 'inc_header.html'/]
+<div class="container">
+    <div class="row">
+        <div class="col">
+            [#include 'sys_member_my_header.html'/]
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 mt-3">
+            <div class="list-group">
+                [#include 'sys_member_my_left.html'/]
+                <script>$('#leftMyInbox').addClass('active');</script>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="px-3 mt-3 bg-white border">
+                <div class="py-2 border-bottom d-flex align-items-center">
+                    <h5 class="flex-grow-1 mb-0">系统消息 - 查看</h5>
+                    <a class="btn btn-primary btn-sm" href="../inbox">返回</a>
+                </div>
+                <div class="py-2">
+                    <div class="text-muted small clearfix">
+                        <div class="float-left">${inbox.receiveTime?string('yyyy-MM-dd HH:mm')}<a class="ml-2" href="delete?ids=${inbox.id}&nextUrl=${ctx}/my/inbox&timeout=0">删除</a></div>
+                    </div>
+                    <div class="mt-1">
+                        [#if inbox.subject??]
+                        <div><strong>${inbox.subject}</strong></div>
+                        [/#if]
+                        <div>[#noescape]${bbcode(inbox.text)}[/#noescape]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+[/#escape]
+
+[#--
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>发送私信_${user.username}_${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    <meta name="keywords" content="${node.keywords}" />
+    <meta name="description" content="${node.description}" />
+    <link href="_files/global.css" rel="stylesheet" />
+    <link href="_files/style.css" rel="stylesheet" />
+    [#include 'inc_js.html'/]
+    <script type="text/javascript" src="${ctx}/static/vendor/My97DatePicker/cn_WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#sendMessageForm").validate();
+            $("input[name=receiverUsername]").focus();
+        });
+    </script>
+</head>
+<body style="background-color:#f4f4f4;">
+<div class="user-top">
+    <div class="w center c999" style="height:32px;line-height:32px;">
+        <div class="left">
+            <a class="topa ml5" href="${ctx}/" target="_blank">首页</a>
+            <a class="topa ml5" href="${ctx}/sitemap" target="_blank">网站地图</a>
+            <a class="topa ml5" href="${ctx}/rss">RSS订阅</a>
+            <a class="topa ml5" href="${ctx}/tags">TAGS标签</a>
+        </div>
+        <div class="right">
+            <script type="text/javascript" src="${ctx}/login_include?d=${.now?time}"></script>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div class="w center mt10 oh">
+    [#include 'sys_member_my_header.html'/]
+</div>
+<div class="w center mt10 oh">
+    <div class="left" style="width:240px;">
+        <div class="user-box">
+            <div class="user-box-head">账号管理</div>
+            <div class="user-box-body">
+                [#include 'sys_member_my_left.html'/]
+            </div>
+        </div>
+    </div>
+    <div class="right user-box" style="width:740px;">
+        <div class="user-box-head">
+            <div class="left">系统消息 - 查看</div>
+            <div class="right"><a href="../inbox" class="a-hover" style="font-weight:normal;color:#4466bb;">返回</a></div>
+            <div class="clear"></div>
+        </div>
+        <div style="padding:15px;">
+            <div>${inbox.receiveTime?string('yyyy-MM-dd HH:mm')} &nbsp; <a href="delete?ids=${inbox.id}&nextUrl=${ctx}/my/inbox&timeout=0" class="c-666 a-hover">删除</a></div>
+            [#if inbox.subject??]
+            <div class="mt5"><strong>${inbox.subject}</strong></div>
+            [/#if]
+            <div class="mt5">[#noescape]${bbcode(inbox.text)}[/#noescape]</div>
+        </div>
+    </div>
+</div>
+<div style="border-top:1px solid #e6e6e6;padding-bottom:20px;margin-top:30px;"></div>
+<div class="w center text-center">
+    <div class="powered">
+        <span>Powered by <strong style="font-size:12px"><a href="http://www.jspxcms.com" target="_blank" class="c-666 a-hover">Jspxcms</a></strong></span>
+        <span>&copy; 2010-2017 Jspxcms All Rights Reserved</span>
+    </div>
+    <div class="copyright">
+        <span>${site.customs['company']} 版权所有</span>
+        <span><a href="http://www.miibeian.gov.cn" target="_blank" class="icp c-666 a-hover">${site.customs['icp']}</a></span>
+    </div>
+</div>
+</body>
+</html>
+[/#escape]
+--]

@@ -1,0 +1,98 @@
+[#escape x as (x)!?html]
+<nav class="navbar navbar-expand navbar-dark bg-primary cm-navbar">
+    <div class="container flex-column flex-xl-row justify-content-start align-items-stretch px-lg-3">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+                <a class="navbar-brand" href="${dy}/">${site.name}</a>
+            </div>
+            [#if user??]
+            <div class="mr-3 d-xl-none">
+                [@NotificationPage receiverId=user.id pageSize=8; pagedList]
+                [#assign notificationCount = pagedList.totalElements/]
+                <a href="${ctx}/my/notification"><i class="far fa-bell lead text-white-50"></i><span class="badge badge-danger notification-count">${(notificationCount>0)?string(notificationCount,'')}</span></a>
+                [/@NotificationPage]
+            </div>
+            <div class="dropdown mr-3 d-xl-none">
+                <img src="${user.avatarSmall}" alt="${user.username}" title="${user.username}" class="rounded-circle dropdown-toggle" data-toggle="dropdown" style="width:28px;height:28px;cursor:pointer;" aria-expanded="false">
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="${ctx}/space/${user.id}"><i class="far fa-user"></i> <span>我的主页</span></a>
+                    <a class="dropdown-item" href="${ctx}/my/message">
+                        <i class="far fa-envelope"></i> <span>私信</span>
+                        <span class="badge badge-danger message-unread-count"></span>
+                    </a>
+                    <a class="dropdown-item" href="${ctx}/my"><i class="fas fa-cog"></i> <span>设置</span></a>
+                    <form action="${ctx}/logout" method="POST">
+                        <button class="dropdown-item" type="submit"><i class="fas fa-sign-out-alt"></i> <span>退出</span></button>
+                    </form>
+                </div>
+            </div>
+            [#else]
+            <div class="text-right mr-3 d-xl-none">
+                <a class="btn btn-primary" href="${ctx}/login?fallbackUrl=${Param.fallbackUrl?url}">登录</a>
+                <a class="btn btn-outline-light" href="${ctx}/register">注册</a>
+            </div>
+            [/#if]
+            <button class="btn d-xl-none collapsed p-0 text-white-50" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img" focusable="false">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="navbar-nav-scroll mr-auto">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link[#if node?? && !node.parent??] active[/#if]" href="${dy}/">首页</a>
+                </li>
+                [@NodeList;list]
+                [#list list as n]
+                <li class="nav-item">
+                    <a class="nav-link[#if (node.hierarchy[1])?? && node.hierarchy[1].id == n.id] active[/#if]" href="${n.url}">${n.name}</a>
+                </li>
+                [/#list]
+                [/@NodeList]
+            </ul>
+        </div>
+        <div class="collapse d-xl-block" id="navbarNavDropdown">
+            <form action="${dy}/search">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="q" name="q" value="${Param.q}" placeholder="搜索" aria-label="搜索">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-light" type="submit">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"></path>
+                                <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-flex align-items-center">
+            [#if user??]
+            <div class="ml-3 d-none d-xl-block">
+                <a href="${ctx}/my/notification"><i class="far fa-bell lead text-white-50"></i><span class="badge badge-danger notification-count">${(notificationCount>0)?string(notificationCount,'')}</span></a>
+            </div>
+            <div class="dropdown ml-3 d-none d-xl-block">
+                <img src="${user.avatarSmall}" alt="${user.username}" title="${user.username}" class="rounded-circle dropdown-toggle" data-toggle="dropdown" style="width:28px;height:28px;cursor:pointer;" aria-expanded="false">
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="${ctx}/space/${user.id}"><i class="far fa-user"></i> <span>我的主页</span></a>
+                    <a class="dropdown-item" href="${ctx}/my/message">
+                        <i class="far fa-envelope"></i> <span>私信</span>
+                        <span class="badge badge-danger message-unread-count"></span>
+                    </a>
+                    <a class="dropdown-item" href="${ctx}/my"><i class="fas fa-cog"></i> <span>设置</span></a>
+                    <form action="${ctx}/logout" method="POST">
+                        <button class="dropdown-item" type="submit"><i class="fas fa-sign-out-alt"></i> <span>退出</span></button>
+                    </form>
+                </div>
+            </div>
+            [#else]
+            <div class="text-right ml-3 d-none d-xl-block">
+                <a class="btn btn-primary" href="${ctx}/login?fallbackUrl=${Param.fallbackUrl?url}">登录</a>
+                <a class="btn btn-outline-light" href="${ctx}/register">注册</a>
+            </div>
+            [/#if]
+        </div>
+    </div>
+</nav>
+[/#escape]

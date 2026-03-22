@@ -1,0 +1,77 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    <meta name="keywords" content="${node.keywords}">
+    <meta name="description" content="${node.description}">
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body>
+[#include 'inc_header.html'/]
+[#include 'inc_banner.html'/]
+<div class="container">
+    <div class="row">
+        <div class="col col-lg-8 mt-3">
+            [@InfoList attr='focusmobile' limit='5';beans]
+            <div id="carouselCaptions" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    [#list beans as bean]
+                    <li data-target="#carouselCaptions" data-slide-to="${bean_index}" class="[#if bean_index==0]active[/#if]"></li>
+                    [/#list]
+                </ol>
+                <div class="carousel-inner">
+                    [#list beans as bean]
+                    <div class="carousel-item[#if bean_index==0] active[/#if]">
+                        <a href="${bean.url}" class="text-reset text-decoration-none">
+                            <img src="${bean.attrImage}" class="d-block w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                                <p>${bean.title}</p>
+                            </div>
+                        </a>
+                    </div>
+                    [/#list]
+                </div>
+                <a class="carousel-control-prev" href="#carouselCaptions" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselCaptions" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+            <script>$('.carousel').carousel();</script>
+            [/@InfoList]
+            <h5 class="mt-3 border-bottom d-none d-lg-block"><a href="${getNode('news').url}" class="text-reset border-primary cm-block-head-bottom">最新新闻</a></h5>
+            [@InfoList node='news' isIncludeChildren='true' limit='20';list]
+            <ul class="list-unstyled">
+                [#list list as bean]
+                <li class="mt-3 media position-relative pb-3 border-bottom">
+                    [#if bean.smallImage??]<img src="${bean.smallImage}" class="mr-3 cm-media-img" alt="${bean.title}">[/#if]
+                    <div class="media-body">
+                        <p class="mt-0 mb-1"><a href="${bean.url}" class="text-reset stretched-link">${bean.title}</a></p>
+                        <p class="small text-muted d-none d-sm-block mb-2">${substring(bean.description,80,'...')}</p>
+                        <div class="small text-muted mt-2 clearfix">
+                            <div class="float-left">
+                                <span>[#list bean.node.hierarchy as n]<a href="${n.url}">${n.name}</a>[#if n_has_next] > [/#if][/#list]</span>
+                                <i class="ml-2 far fa-eye"></i> ${bean.bufferViews}
+                            </div>
+                            <div class="float-right"><i class="ml-2 far fa-clock"></i> ${bean.publishDate?string('yyyy-MM-dd')}</div>
+                        </div>
+                    </div>
+                </li>
+                [/#list]
+            </ul>
+            [/@InfoList]
+        </div>
+        [#include 'inc_right.html'/]
+    </div>
+</div>
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]

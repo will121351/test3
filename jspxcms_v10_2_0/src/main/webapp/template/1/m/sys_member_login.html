@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body class="bg-light">
+<div class="container my-3 my-md-4 my-lg-5">
+    <div class="row justify-content-center">
+        <div class="col col-md-6 col-lg-5 col-xl-5 reg-box">
+            <h3 class="reg-logo text-center"><a href="${ctx}/">jsp<b>XCMS</b></a> 登录</h3>
+            [#if shiroLoginFailure??]
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                [#if shiroLoginFailure=='com.jspxcms.common.security.IncorrectCaptchaException']
+                验证码不正确！
+                [#elseif shiroLoginFailure=='org.apache.shiro.authc.UnknownAccountException']
+                [#--用户名不存在--]
+                用户名或密码错误！
+                [#elseif shiroLoginFailure=='org.apache.shiro.authc.LockedAccountException']
+                此用户被锁定！
+                [#elseif shiroLoginFailure=='com.jspxcms.common.security.UnactivatedAccountException']
+                此用户未激活！
+                [#elseif shiroLoginFailure=='org.apache.shiro.authc.IncorrectCredentialsException']
+                用户名或密码错误！
+                [#else]
+                ${shiroLoginFailure}
+                [/#if]
+            </div>
+            [/#if]
+            <div class="reg-box-body rounded p-4 mt-4" style="background-color:#fff;border:1px solid #ccc;">
+                <form class="mb-2" id="validForm" action="${ctx}/login" method="POST">
+                    <div class="form-group">
+                        <label class="sr-only" for="username">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" value="${username}" placeholder="用户名" title="请填写用户名" required>
+                        <!--<small class="form-text text-muted">4~18个字符，可使用字母、数字、下划线</small>-->
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="password">密码</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="密码" title="请填写密码" required autocomplete="off">
+                    </div>
+                    [#if Session.shiroCaptchaRequired?? || global.captchaErrors<=0]
+                    <div class="form-group">
+                        <label class="sr-only" for="captcha">验证码</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="captcha" name="captcha" placeholder="验证码" autocomplete="off" required title="请填写验证码" data-msg-remote="验证码错误">
+                            <div class="input-group-append">
+                                <img src="${ctx}/captcha" class="input-group-text" style="cursor:pointer;padding:0;" onclick="this.src='${ctx}/captcha?d='+new Date()*1;$('#captcha').focus();" title="点击重新获取验证码" />
+                            </div>
+                        </div>
+                    </div>
+                    [/#if]
+                    <div class="form-group custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="rememberMe" name="rememberMe" checked>
+                        <label class="custom-control-label" for="rememberMe">自动登录</label>
+                    </div>
+                    <input type="hidden" name="fallbackUrl" value="${param.fallbackUrl}" />
+                    <button type="submit" class="btn btn-primary btn-block">登录</button>
+                </form>
+                <p class="text-center text-muted pt-2">
+                    <small>----- OR -----</small>
+                </p>
+                <p class="text-center lead">
+                    [#include 'inc_oauth.html'/]
+                </p>
+                <p class="text-center">
+                    <small><a href="${ctx}/register">注册</a><a class="ml-3" href="${ctx}/forgot_password">忘记密码</a></small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#username').focus().select();
+        $('#validForm').validate();
+    });
+</script>
+</body>
+</html>
+[/#escape]

@@ -1,0 +1,10 @@
+[#escape x as (x)!?html]
+<div class="media mt-3">
+    <a href="${site.urlFull}/space/${(targetUser!user).id}"><img src="${(targetUser!user).avatarLarge}?d=${.now?datetime}" class="mr-2 mr-lg-3 img-thumbnail" width="120" height="120"></a>
+    <div class="media-body">
+        <h5 class="mt-1 mb-0"><a href="${ctx}/space/${(targetUser!user).id}" class="text-reset">${(targetUser!user).username}</a></h5>
+        <div class="mt-1"><a href="${site.urlFull}/space/${(targetUser!user).id}" class="text-muted">${site.urlFull}/space/${(targetUser!user).id}</a></div>
+        <div class="mt-1">${(targetUser!user).bio!"还没有填写个人简介"}</div>
+    </div>
+</div>
+[/#escape]

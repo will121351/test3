@@ -1,0 +1,101 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>${info.title} - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    <meta name="keywords" content="${node.keywords}">
+    <meta name="description" content="${node.description}">
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+    <link href="_files/vendor/video.js/dist/video-js.min.css" rel="stylesheet">
+    <script src="_files/vendor/video.js/dist/video.min.js"></script>
+</head>
+<body>
+[#include 'inc_header.html'/]
+<div class="container">
+    <nav class="row" aria-label="breadcrumb">
+        <ol class="breadcrumb col">
+            [#list node.hierarchy as n]
+            <li class="breadcrumb-item"><a href="${n.url}">${n.name}</a></li>
+            [/#list]
+        </ol>
+    </nav>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col mt-2">
+            <h3 class="cm-ff-yh">${info.title}</h3>
+            <div class="mt-3 pb-1 border-bottom text-muted">
+                <span>${info.publishDate?string('yyyy-MM-dd HH:mm')}</span>
+                <i class="ml-2 far fa-eye"></i> <span id="info_views"></span>
+                <script>$("#info_views").load("${ctx}/info_views/${info.id}?d=" + new Date() * 1);</script>
+                <script src="${dy}/app?template=info_favorites&id=${info.id}"></script>
+            </div>
+            <div class="my-3">
+                <video id="my-player" class="video-js" controls preload="auto" data-setup='{"fluid":true}'>
+                    <source src="${info.video}" type="video/mp4">
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a web browser that
+                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                    </p>
+                </video>
+            </div>
+            <div class="lead d-flex justify-content-center text-info">
+                <div class="cm-pointer" onclick="voteUp()"><i class="far fa-thumbs-up"></i> <span id="ups"></span></div>
+                <div class="cm-pointer ml-4" onclick="voteDown()"><i class="far fa-thumbs-down"></i> <span id="downs"></span></div>
+            </div>
+            <script>
+                function voteUp() {
+                    $.post('${dy}/info_digg',{id:${info.id}},function(data){
+                        if(data!=='0'){$('#ups').text(data);}else{alert("你已经顶过一次！")}
+                    });
+                }
+                function voteDown() {
+                    $.post('${dy}/info_bury',{id:${info.id}},function(data){
+                        if(data!=='0'){$('#downs').text(data);}else{alert("你已经踩过一次！")}
+                    });
+                }
+                $.get('${dy}/info_diggs/${info.id}?d='+new Date()*1,function(data) {
+                    $('#ups').text(data[0]);$('#downs').text(data[1]);
+                },"json");
+            </script>
+            <div class="bdsharebuttonbox mt-2"><a href="#" class="bds_more a-none" data-cmd="more">分享到：</a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><!--<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>--><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a></div>
+            <script>
+                window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};
+                with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+            </script>
+            <ul class="mt-3 list-unstyled">
+                [@InfoPrev id=info.id;bean]
+                [#if bean??]
+                <li class="text-truncate"><strong>上一条：</strong><a href="${bean.url}" class="text-reset">${bean.title}</a></li>
+                [#else]
+                <li class="text-truncate"><strong>上一条：</strong>没有了</li>
+                [/#if]
+                [/@InfoPrev]
+                [@InfoNext id=info.id;bean]
+                [#if bean??]
+                <li class="text-truncate"><strong>下一条：</strong><a href="${bean.url}" class="text-reset">${bean.title}</a></li>
+                [#else]
+                <li class="text-truncate"><strong>下一条：</strong>没有了</li>
+                [/#if]
+                [/@InfoNext ]
+            </ul>
+            <h6 class="border-bottom mt-2"><span class="border-primary cm-block-head-bottom">相关新闻</span></h6>
+            [@InfoFulltextList q=info.title excludeId=info.id limit=5;list]
+            <ul class="list-unstyled cm-list-round">
+                [#list list as fulltextInfo]
+                <li class="text-truncate">[@A bean=fulltextInfo class="a text-reset"/]</li>
+                [/#list]
+            </ul>
+            [/@InfoFulltextList]
+        </div>
+    </div>
+</div>
+<script>
+</script>
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]

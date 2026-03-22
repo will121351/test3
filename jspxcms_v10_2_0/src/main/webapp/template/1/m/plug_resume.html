@@ -1,0 +1,216 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>申请职位 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+    <link rel="stylesheet" href="_files/vendor/flatpickr/dist/flatpickr.min.css">
+    <script src="_files/vendor/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="_files/vendor/flatpickr/dist/l10n/zh.js"></script>
+    <script>
+        $(function () {
+            document.getElementsByClassName("flatpickr").flatpickr({locale: 'zh'});
+            $('#validForm').validate();
+        });
+    </script>
+</head>
+<body>
+[#include 'inc_header.html'/]
+<div class="container">
+    <h3 class="text-primary mt-2">申请职位</h3>
+    <form class="bg-light border p-3 mb-2" id="validForm" method="post" action="${ctx}/resume">
+        <div class="form-group row">
+            <label for="post" class="col-sm-2 col-form-label">职位<em class="text-danger">*</em></label>
+            <div class="col-sm-10">
+                <select class="custom-select" id="post" name="post" required>
+                    [@InfoList node='jobs';list]
+                    [#list list as info]
+                    <option [#if (Param.post!)==info.title]selected[/#if]>${info.title}</option>
+                    [/#list]
+                    [/@InfoList]
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="name" class="col-sm-2 col-form-label">姓名<em class="text-danger">*</em></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="name" name="name" maxlength="100" required>
+            </div>
+        </div>
+        <fieldset class="form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">性别<em class="text-danger">*</em></legend>
+                <div class="col-sm-10">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="gender1" name="gender" value="M" class="custom-control-input" checked>
+                        <label class="custom-control-label" for="gender1">男</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="gender2" name="gender" value="F" class="custom-control-input">
+                        <label class="custom-control-label" for="gender2">女</label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group row">
+            <label for="birthDate" class="col-sm-2 col-form-label">出生年月<em class="text-danger">*</em></label>
+            <div class="col-sm-10">
+                <input class="form-control flatpickr date" type="text" id="birthDate" name="birthDate" data-date-format="Y-m-d" autocomplete="off" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="mobile" class="col-sm-2 col-form-label">手机<em class="text-danger">*</em></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="mobile" name="mobile" maxlength="100" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="email" class="col-sm-2 col-form-label">邮箱</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control email" id="email" name="email" maxlength="100">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="expectedSalary" class="col-sm-2 col-form-label">期望薪水</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control digits" id="expectedSalary" name="expectedSalary" maxlength="9">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="educationExperience" class="col-sm-2 col-form-label">教育经历</label>
+            <div class="col-sm-10">
+                <textarea type="text" class="form-control" id="educationExperience" name="educationExperience" rows="8"></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="workExperience" class="col-sm-2 col-form-label">工作经历</label>
+            <div class="col-sm-10">
+                <textarea type="text" class="form-control" id="workExperience" name="workExperience" rows="8"></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="email" class="col-sm-2 col-form-label">备注</label>
+            <div class="col-sm-10">
+                <textarea type="text" class="form-control" id="remark" name="remark" rows="8"></textarea>
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">确认提交</button>
+        <input type="hidden" name="nextUrl" value="${url}">
+        <input type="hidden" name="status_0" value="投递简历成功">
+    </form>
+</div>
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]
+
+
+[#--
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>申请职位_${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    <meta name="keywords" content="申请职位" />
+    <meta name="description" content="申请职位" />
+    <link href="_files/global.css" rel="stylesheet" />
+    <link href="_files/style.css" rel="stylesheet" />
+    [#include 'inc_js.html'/]
+    <script type="text/javascript" src="${fore}/jquery.validation_zh_CN.js"></script>
+    <script type="text/javascript" src="${ctx}/static/vendor/My97DatePicker/cn_WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#validForm").validate();
+        });
+    </script>
+</head>
+<body>
+[#include 'inc_header.html'/]
+<div class="w center">
+    <div style="padding:10px 5px;border-bottom:2px solid #7aaf23;"><a href="${site.url}" class="a c-desc">首页</a> > 申请职位</div>
+    <form id="" method="post" action="${ctx}/resume">
+        <div class="mt20" style="padding:0px 20px 20px 20px;border:1px dotted #cdcdcd; background-color:#f2f2f2;">
+            <div class="form-item">
+                <div class="form-label"><em class="required">*</em>职位</div>
+                <div class="form-input">
+                    <select name="post">
+                        [@InfoList node='jobs';list]
+                        [#list list as info]
+                        <option
+                                [#if Param.post!==info.title]selected[/#if]>${info.title}
+                        </option>
+                        [/#list]
+                        [/@InfoList]
+                    </select>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label"><em class="required">*</em>姓名</div>
+                <div class="form-input"><input type="text" name="name" class="required" maxlength="100" style="width:220px;" /></div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label"><em class="required">*</em>性别</div>
+                <div class="form-input">
+                    <label><input type="radio" name="gender" value="M" checked="checked" />男</label> &nbsp;
+                    <label><input type="radio" name="gender" value="F" />女</label>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label">出生年月</div>
+                <div class="form-input"><input type="text" name="birthDate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'});" style="width:220px;" /></div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label">手机</div>
+                <div class="form-input"><input type="text" name="mobile" maxlength="100" style="width:220px;" /></div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label">邮箱</div>
+                <div class="form-input"><input type="text" name="email" class="email" maxlength="100" style="width:220px;" /></div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label">期望薪水</div>
+                <div class="form-input"><input type="text" name="expectedSalary" class="digits" maxlength="9" style="width:220px;" /></div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label">教育经历</div>
+                <div class="form-input"><textarea name="educationExperience" style="width:500px;height:100px;"></textarea></div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label">工作经历</div>
+                <div class="form-input"><textarea name="workExperience" style="width:500px;height:100px;"></textarea></div>
+                <div class="clear"></div>
+            </div>
+            <div class="form-item">
+                <div class="form-label">备注</div>
+                <div class="form-input"><textarea name="remark" style="width:500px;height:100px;"></textarea></div>
+                <div class="clear"></div>
+            </div>
+            <table class="center mt20">
+                <tr>
+                    <td>
+                        <input type="hidden" name="nextUrl" value="${url}" />
+                        <input type="hidden" name="status_0" value="投递简历成功" />
+                        <button type="submit" class="ff-yh fs16 b" style="background-color:#cc3333;color:#fff;border:none;padding:5px 20px;">确认提交</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+[#include 'inc_friendlink.html'/]
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]
+--]

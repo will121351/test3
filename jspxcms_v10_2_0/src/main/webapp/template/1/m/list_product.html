@@ -1,0 +1,72 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>${node.name} - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    <meta name="keywords" content="${node.keywords}">
+    <meta name="description" content="${node.description}">
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body>
+[#include 'inc_header.html'/]
+<div class="container">
+    <div class="row">
+        <div class="col mt-3">
+            <div class="py-1 border-bottom">
+                [#assign parentId=node.parent.id/]
+                [#if !node.parent.parent??]
+                [#assign parentId=node.id/]
+                <a class="btn btn-sm btn-primary" href="${node.url}">全部</a>
+                [#else]
+                <a class="btn btn-sm btn-link" href="${node.parent.url}">全部</a>
+                [/#if]
+                [@NodeList parentId=parentId;list]
+                [#list list as bean]
+                <a class="btn btn-sm [#if node.id==bean.id]btn-primary[#else]btn-link[/#if]" href="${bean.url}">${bean.name}</a>
+                [/#list]
+                [/@NodeList]
+            </div>
+            [#if node.parent.parent??]
+            [#list node.infoModel.queryableFields as field]
+            <div class="py-1 border-bottom">
+                <a href="${addParam(node.urlDynamic,field.name)}" class="btn btn-sm [#if !Param[field.name]??]btn-secondary[#else]btn-link text-reset[/#if]">全部${field.label}</a>
+                [#assign options = field.options/]
+                [#list options?keys as key]
+                <a href="${addParam(node.urlDynamic,field.name,key)}" class="btn btn-sm [#if Param[field.name]! == key]btn-secondary[#else]btn-link text-reset[/#if]">${options[key]}</a>
+                [/#list]
+            </div>
+            [/#list]
+            [/#if]
+            [#if Param.sort! == 'views'] [#assign sort='views desc'/] [/#if]
+            <div class="py-1 border-bottom">
+                <a href="${addParam(node.urlDynamic,'sort')}" class="btn btn-sm [#if !Param.sort??]btn-secondary[#else]btn-link text-reset[/#if]">时间排序</a>
+                <a href="${addParam(node.urlDynamic,'sort','views')}" class="btn btn-sm [#if Param.sort! == 'views']btn-secondary[#else]btn-link text-reset[/#if]">热门排序</a>
+            </div>
+            [@InfoPage nodeId=node.id isIncludeChildren='true' pageSize='10'sort=sort p1=Param.p1 p2=Param.p2 p3=Param.p3 p4=Param.p4 p5=Param.p5 p6=Param.p6;pagedList]
+            <div class="row mx-n1">
+                [#list pagedList.content as bean]
+                <div class="col-lg-3 col-6 px-1 mt-3">
+                    <div class="card">
+                        <div class="p-3"><img src="${bean.smallImage}" class="card-img-top" alt="${bean.title}"></div>
+                        <div class="card-body p-2">
+                            <div class="card-text cm-truncate2"><a href="${bean.url}" class="text-reset stretched-link small">${bean.title}</a></div>
+                            <div class="card-text text-danger h5 mt-2"><small>￥</small>${bean.customs['price']}</div>
+                        </div>
+                    </div>
+                </div>
+                [/#list]
+            </div>
+            <div class="mt-3">
+                [#include 'page.html'/]
+            </div>
+            [/@InfoPage]
+        </div>
+    </div>
+</div>
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]

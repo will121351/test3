@@ -1,0 +1,55 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>系统消息 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body class="bg-light">
+[#include 'inc_header.html'/]
+<div class="container">
+    <div class="row">
+        <div class="col">
+            [#include 'sys_member_my_header.html'/]
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 mt-3">
+            <div class="list-group">
+                [#include 'sys_member_my_left.html'/]
+                <script>$('#leftMyInbox').addClass('active');</script>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="px-3 mt-3 bg-white border">
+                <div class="py-2 border-bottom d-flex align-items-center">
+                    <h5 class="flex-grow-1 mb-0">系统消息</h5>
+                </div>
+                [@InboxPage receiverId=user.id;pagedList]
+                [#if pagedList.totalElements gt 0]
+                <ul class="list-group list-group-flush">
+                    [#list pagedList.content as bean]
+                    <li class="list-group-item px-0">
+                        <div class="text-muted small clearfix">
+                            <div class="float-left">${prettyTime(bean.receiveTime)}[#if bean.unread] <span class="badge badge-danger">未读</span>[/#if]</div>
+                            <div class="float-right"><a href="inbox/delete?ids=${bean.id}&nextUrl=${ctx}/my/inbox&timeout=0">删除</a></div>
+                        </div>
+                        <div class="mt-1"><a href="inbox/${bean.id}">${substring(bean.title,50,'...')}</a></div>
+                    </li>
+                    [/#list]
+                </ul>
+                <div>[#include 'page.html'/]</div>
+                [#else]
+                <div class="alert alert-warning mt-2" role="alert">没有找到相关数据！</div>
+                [/#if]
+                [/@InboxPage]
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+[/#escape]

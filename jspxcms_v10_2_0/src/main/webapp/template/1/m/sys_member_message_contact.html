@@ -1,0 +1,80 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>与 ${contact.username} 的私信 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+    <script>
+        $(function () {
+            $('#sendMessageForm').validate();
+            $('#text').focus();
+        });
+    </script>
+</head>
+<body class="bg-light">
+[#include 'inc_header.html'/]
+<div class="container">
+    <div class="row">
+        <div class="col">
+            [#include 'sys_member_my_header.html'/]
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 mt-3">
+            <div class="list-group">
+                [#include 'sys_member_my_left.html'/]
+                <script>$('#leftMyMessage').addClass('active');</script>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="px-3 mt-3 bg-white border">
+                <div class="py-2 d-flex align-items-center">
+                    <h5 class="flex-grow-1 mb-0">与 <span>${contact.username}</span> 的私信</h5>
+                </div>
+                <form id="sendMessageForm" action="${ctx}/my/message/send" method="POST">
+                    <div class="form-group">
+                        <label class="sr-only" for="text">内容</label>
+                        <textarea id="text" name="text" class="form-control" data-rule-required="true" rows="5" maxlength="1000" onkeydown="if(event.ctrlKey&&event.keyCode===13){$('#sendMessageForm').submit();}"></textarea>
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary">提交</button>
+                    </div>
+                    <input type="hidden" name="receiverUsername" value="${contact.username}" />
+                    <input type="hidden" name="nextUrl" value="${ctx}/my/message" />
+                    <input type="hidden" name="timeout" value="0" />
+                </form>
+                <div>
+                    [@MessageContactPage userId=user.id contactId=contact.id;pagedList]
+                    [#if pagedList.totalElements gt 0]
+                    <ul class="list-group list-group-flush">
+                        [#list pagedList.content as bean]
+                        <li class="list-group-item px-0">
+                            <div class="d-flex">
+                                <div><a href="${ctx}/space/${bean.sender.id}"><img src="${bean.sender.avatarSmall}" class="img-thumbnail" width="50" height="50"></a></div>
+                                <div class="ml-2">
+                                    <div>
+                                        <a href="${ctx}/space/${bean.sender.id}">${bean.sender.username}</a>
+                                        <span class="ml-1 text-muted small">${prettyTime(bean.sendTime)}</span>
+                                    </div>
+                                    <div><strong>${bean.subject}</strong></div>
+                                    <div>[#noescape]${bbcode(bean.text)}[/#noescape]</div>
+                                </div>
+                            </div>
+                            <div class="text-right small"><a href="../delete?ids=${bean.id}&nextUrl=${ctx}/my/message/contact/${contact.id}&timeout=0" class="ml-2">删除</a></div>
+                        </li>
+                        [/#list]
+                    </ul>
+                    <div>[#include 'page.html'/]</div>
+                    [/#if]
+                    [/@MessageContactPage]
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+[/#escape]

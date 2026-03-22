@@ -1,0 +1,39 @@
+[#escape x as (x)!?html]
+<div class="col-sm-4 mt-3 px-4 d-none d-lg-block">
+    <h6 class="border-bottom"><span class="border-primary cm-block-head-bottom">热点新闻</span></h6>
+    <div class="px-2 pb-2">
+        [@InfoList sort='views desc' limit='10';list]
+        [#list list as info]
+        <div class="mt-2 d-flex flex-row">
+            <div><span class="badge badge-primary" style="width:26px;">${info_index+1}</span></div>
+            <div class="ml-2 text-truncate"><a class="text-reset small" href="${info.url}">${info.title}</a></div>
+        </div>
+        [/#list]
+        [/@InfoList]
+    </div>
+    <h6 class="border-bottom mt-3"><a class="text-reset border-primary text-decoration-none cm-block-head-bottom" href="${getNode('video').url}">精彩视频</a></h6>
+    <div class="px-3">
+        [@InfoList node='video' isIncludeChildren='true' limit='4';list]
+        [#list list as info]
+        <div class="py-3 px-2 position-relative">
+            <img src="${info.smallImageUrl}" class="img-fluid" alt="${info.title}">
+            <div class="mt-2"><a class="text-reset stretched-link small" href="${info.url}">${info.title}</a></div>
+        </div>
+        [/#list]
+        [/@InfoList]
+    </div>
+    [#--
+    <h6 class="border-bottom mt-2"><a class="text-reset border-primary text-decoration-none cm-block-head-bottom" href="${getNode('photo').url}">图片资讯</a></h6>
+    <div class="px-3">
+        [@InfoList node='photo' isIncludeChildren='true' limit='4';list]
+        [#list list as info]
+        <div class="py-3 px-2 position-relative">
+            <img src="${info.smallImageUrl}" class="img-fluid" alt="${info.title}">
+            <div class="mt-2"><a class="text-reset stretched-link small" href="${info.url}">${info.title}</a></div>
+        </div>
+        [/#list]
+        [/@InfoList]
+    </div>
+    --]
+</div>
+[/#escape]

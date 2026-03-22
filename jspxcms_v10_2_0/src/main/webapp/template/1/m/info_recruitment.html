@@ -1,0 +1,60 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<title>${info.title} - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+	<meta name="keywords" content="${info.keywords}">
+	<meta name="description" content="${info.description}">
+	[#include 'inc_meta.html'/]
+	[#include 'inc_css.html'/]
+	[#include 'inc_js.html'/]
+    <script>$.get("${dy}/info_views/${info.id}?d="+new Date()*1);</script>
+</head>
+<body>
+[#include 'inc_header.html'/]
+<div class="container">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb col">
+			[#list node.hierarchy as n]<li class="breadcrumb-item"><a href="${n.url}">${n.name}</a></li>[/#list]
+		</ol>
+	</nav>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h3 class="cm-ff-yh">${info.title}</h3>
+			<div class="border-bottom pb-2 text-muted">${info.customs['company']}</div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <p>薪酬待遇：${info.customs['salary']}</p>
+            <p>发布日期：${info.publishDate?string('yyyy-MM-dd')}</p>
+            <p>工作经验：${info.customs['experience']}</p>
+            <p>招聘人数：${info.customs['number']}</p>
+        </div>
+        <div class="col-md-6">
+            <p>工作地点：${info.customs['location']}</p>
+            <p>工作性质：${info.customs['jobtype']}</p>
+            <p>最低学历：${info.customs['education']}</p>
+            <p>部门名称：${info.customs['dept']}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mt-2">
+            <h6 class="border-bottom"><span class="border-primary cm-block-head-bottom">岗位职责</span></h6>
+            <div class="mt-3">[#noescape]${bbcode(info.customs['responsibilities'])}[/#noescape]</div>
+            <h6 class="border-bottom mt-3"><span class="border-primary cm-block-head-bottom">岗位要求</span></h6>
+            <div class="mt-3">[#noescape]${bbcode(info.customs['qualifications'])}[/#noescape]</div>
+            <form action="${dy}/resume" class="py-4">
+                <input type="hidden" name="post" value="${info.title}">
+                <button type="submit" class="btn btn-warning btn-lg text-white">申请职位</button>
+            </form>
+        </div>
+    </div>
+</div>
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]

@@ -1,0 +1,28 @@
+[#assign script]
+[@Info id=Param.id;info]
+<span class="cm-pointer ml-2" onclick="favorites()"><i id="favoriteIcon" class="[#if info.isFavorite(user)]fas[#else]far[/#if] fa-star"></i> <span id="favoritesCount">${info.favorites}</span></span>
+<script>
+    function favorites() {
+        var url;
+        if ($('#favoriteIcon').hasClass('fas')) {
+            url = '${ctx}/info_unfavorite';
+        } else {
+            url = '${ctx}/info_favorite';
+        }
+        $.post(url, {'id': ${info.id}}, function (data) {
+            if (data === '-1') {
+                alert('请先登录');
+            } else {
+                $('#favoritesCount').text(data);
+                if ($('#favoriteIcon').hasClass("fas")) {
+                    $('#favoriteIcon').removeClass('fas').addClass('far');
+                } else {
+                    $("#favoriteIcon").removeClass('far').addClass('fas');
+                }
+            }
+        });
+    }
+</script>
+[/@Info]
+[/#assign]
+document.write("${script?js_string}");

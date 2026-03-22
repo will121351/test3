@@ -1,0 +1,110 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>${(targetUser!user).username} - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body class="bg-light">
+[#include 'inc_header.html'/]
+<div class="container">
+    <div class="row">
+        <div class="col">
+            [#include 'sys_member_my_header.html'/]
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 mt-3">
+            <div class="card">
+                <h5 class="card-header">基本概况</h5>
+                <div class="card-body">
+                    <div><label class="text-muted">会员组：</label>${targetUser.group.name}</div>
+                    <div><label class="text-muted">性别：</label>[#if targetUser.gender??][#if targetUser.gender=='M']男[#else]女[/#if][#else]保密[/#if]</div>
+                    <div><label class="text-muted">生日：</label>[#if targetUser.birthDate??]${targetUser.birthDate?string('yyyy-MM-dd')}[#else]保密[/#if]</div>
+                    <div><label class="text-muted">来自：</label>[#if targetUser.comeFrom??]${targetUser.comeFrom}[#else]保密[/#if]</div>
+                    <div><label class="text-muted">注册时间：</label>${targetUser.creationDate?string('yyyy-MM-dd HH:mm')}</div>
+                    <div><label class="text-muted">最后访问：</label>${targetUser.lastLoginDate?string('yyyy-MM-dd HH:mm')}</div>
+                    <div><label class="text-muted">登录次数：</label>${targetUser.logins}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 mt-3">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link[#if !Param.type??] active[/#if]" href="${ctx}/space/${targetUser.id}">主页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link[#if Param.type?? && Param.type='comment'] active[/#if]" href="${ctx}/space/${targetUser.id}?type=comment">评论</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link[#if Param.type?? && Param.type='article'] active[/#if]" href="${ctx}/space/${targetUser.id}?type=article">文章</a>
+                </li>
+            </ul>
+            <div class="bg-white border border-top-0">
+                [#if Param.type?? && Param.type=='comment']
+
+                [#if !page??][#if Param.page??][#assign page=Param.page?html?number][#else][#assign page=1/][/#if][/#if]
+                [@CommentPage creatorId=targetUser.id pageSize='20' page=page;pagedList]
+                <ul class="list-group list-group-flush">
+                    [#list pagedList.content as comment]
+                    <li class="list-group-item">
+                        <a href="${comment.anchor.url}" title="${comment.anchor.title}">#${substring(comment.anchor.title,30,'...')}#</a>
+                        <span>${substring(comment.text,150,'...')}</span>
+                    </li>
+                    [/#list]
+                </ul>
+                <div class="ml-3">[#include 'page.html'/]</div>
+                [/@CommentPage]
+
+                [#elseif Param.type?? && Param.type=='article']
+
+                [#if !page??][#if Param.page??][#assign page=Param.page?html?number][#else][#assign page=1/][/#if][/#if]
+                [@InfoPage userId=targetUser.id pageSize='10' page=page;pagedList]
+                <ul class="list-group list-group-flush">
+                    [#list pagedList.content as info]
+                    <li class="list-group-item">[@A bean=info /] <span class="text-muted small">${info.publishDate?string('yyyy-MM-dd')}</span></li>
+                    [/#list]
+                </ul>
+                <div class="ml-3">[#include 'page.html'/]</div>
+                [/@InfoPage]
+
+                [#else]
+
+                [@CommentList creatorId=targetUser.id limit='5';list]
+                [#if list?size gt 0]
+                <div class="p-2 bg-light"><a href="${ctx}/space/${targetUser.id}?type=comment" class="text-reset">最新评论</a></div>
+                <ul class="list-group list-group-flush">
+                    [#list list as comment]
+                    <li class="list-group-item">
+                        <a href="${comment.anchor.url}" title="${comment.anchor.title}">#${substring(comment.anchor.title,30,'...')}#</a>
+                        <span>${substring(comment.text,150,'...')}</span>
+                    </li>
+                    [/#list]
+                </ul>
+                [/#if]
+                [/@CommentList]
+                [@InfoList userId=targetUser.id limit='5';list]
+                [#if list?size gt 0]
+                <div class="p-2 bg-light"><a href="${ctx}/space/${targetUser.id}?type=article" class="text-reset">最新文章</a></div>
+                <ul class="list-group list-group-flush">
+                    [#list list as info]
+                    <li class="list-group-item">[@A bean=info /] <span class="text-muted small">${info.publishDate?string('yyyy-MM-dd')}</span></li>
+                    [/#list]
+                </ul>
+                [/#if]
+                [/@InfoList]
+
+                [/#if]
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+[/#escape]

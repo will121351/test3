@@ -1,0 +1,86 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>${info.title} - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    <meta name="keywords" content="${node.keywords}">
+    <meta name="description" content="${node.description}">
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body>
+[#include 'inc_header.html'/]
+<div class="container">
+    <nav class="row" aria-label="breadcrumb">
+        <ol class="breadcrumb col">
+            [#list node.hierarchy as n]
+            <li class="breadcrumb-item"><a href="${n.url}">${n.name}</a></li>
+            [/#list]
+        </ol>
+    </nav>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 mt-2">
+            <img class="img-fluid" src="${info.largeImageUrl}">
+        </div>
+        <div class="col-md-8 mt-2">
+            <h5 class="cm-ff-yh">${info.title}</h5>
+            <div class="mt-3 pb-3 border-bottom text-muted">
+                <span>${info.publishDate?string('yyyy-MM-dd HH:mm')}</span>
+                <i class="ml-2 far fa-eye"></i> <span id="info_views"></span>
+                <script>$("#info_views").load("${ctx}/info_views/${info.id}?d=" + new Date() * 1);</script>
+                <script src="${dy}/app?template=info_favorites&id=${info.id}"></script>
+            </div>
+            <div class="mt-3">
+                <div class="mt-3"><span class="text-muted mr-2">优惠价</span><span class="text-danger">￥<span class="h3">${info.customs['price']}</span></span></div>
+                <div class="mt-3"><span class="text-muted mr-2">市场价</span><span>￥${info.customs['marketPrice']}</span></div>
+                <div class="mt-3"><span class="text-muted mr-2">库存</span><span>${info.customs['stock']}</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <h6 class="border-bottom mt-2"><span class="border-primary cm-block-head-bottom">商品介绍</span></h6>
+            <div class="info-content">[#noescape]${info.clobs['introduce']}[/#noescape]</div>
+            <h6 class="border-bottom mt-2"><span class="border-primary cm-block-head-bottom">规格参数</span></h6>
+            <div class="info-content">[#noescape]${info.clobs['specification']}[/#noescape]</div>
+            <h6 class="border-bottom mt-2"><span class="border-primary cm-block-head-bottom">包装清单</span></h6>
+            <div class="info-content">[#noescape]${info.clobs['packingList']}[/#noescape]</div>
+            <h6 class="border-bottom mt-2"><span class="border-primary cm-block-head-bottom">售后服务</span></h6>
+            <div class="info-content">[#noescape]${info.clobs['services']}[/#noescape]</div>
+            <script>$('.info-content img').addClass('img-fluid');</script>
+            <ul class="border-top list-unstyled mt-3 pt-3">
+                [@InfoPrev id=info.id;bean]
+                [#if bean??]
+                <li class="text-truncate"><strong>上一条：</strong><a href="${bean.url}" class="text-reset">${bean.title}</a></li>
+                [#else]
+                <li class="text-truncate"><strong>上一条：</strong>没有了</li>
+                [/#if]
+                [/@InfoPrev]
+                [@InfoNext id=info.id;bean]
+                [#if bean??]
+                <li class="text-truncate"><strong>下一条：</strong><a href="${bean.url}" class="text-reset">${bean.title}</a></li>
+                [#else]
+                <li class="text-truncate"><strong>下一条：</strong>没有了</li>
+                [/#if]
+                [/@InfoNext ]
+            </ul>
+            <h6 class="border-bottom mt-2"><span class="border-primary cm-block-head-bottom">相关新闻</span></h6>
+            [@InfoFulltextList q=info.title excludeId=info.id limit=5;list]
+            <ul class="list-unstyled cm-list-round">
+                [#list list as fulltextInfo]
+                <li class="text-truncate">[@A bean=fulltextInfo class="a text-reset"/]</li>
+                [/#list]
+            </ul>
+            [/@InfoFulltextList]
+        </div>
+    </div>
+</div>
+
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]

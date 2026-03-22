@@ -1,0 +1,63 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>我的私信 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body class="bg-light">
+[#include 'inc_header.html'/]
+<div class="container">
+    <div class="row">
+        <div class="col">
+            [#include 'sys_member_my_header.html'/]
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 mt-3">
+            <div class="list-group">
+                [#include 'sys_member_my_left.html'/]
+                <script>$('#leftMyMessage').addClass('active');</script>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="px-3 mt-3 bg-white border">
+                <div class="py-2 border-bottom d-flex align-items-center">
+                    <h5 class="flex-grow-1 mb-0">我的私信</h5>
+                    <a class="btn btn-primary btn-sm" href="message/send">发送私信</a>
+                </div>
+                <div>
+                    [@MessagePage receiverId=user.id;pagedList]
+                    [#if pagedList.totalElements gt 0]
+                    <ul class="list-group list-group-flush">
+                        [#list pagedList.content as bean]
+                        <li class="list-group-item px-0">
+                            <div class="d-flex">
+                                <div><a href="${ctx}/space/${bean[1].id}"><img src="${bean[1].avatarSmall}" class="img-thumbnail" width="50" height="50"></a></div>
+                                <div class="ml-2">
+                                    <div>
+                                        <a href="${ctx}/space/${bean[1].id}">${bean[1].username}</a>
+                                        [#if bean[7] gt 0]<span class="badge badge-danger">${bean[7]}</span>[/#if]
+                                        <span class="ml-1 text-muted small">${prettyTime(bean[0].sendTime)}</span>
+                                    </div>
+                                    <div>${bean[0].title}</div>
+                                </div>
+                            </div>
+                            <div class="text-right small"><a href="message/contact/${bean[1].id}">共有 ${bean[6]} 条私信</a><a href="message/delete?ids=${bean[1].id}" class="ml-2">删除</a></div>
+                        </li>
+                        [/#list]
+                    </ul>
+                    <div>[#include 'page.html'/]</div>
+                    [/#if]
+                    [/@MessagePage]
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+[/#escape]

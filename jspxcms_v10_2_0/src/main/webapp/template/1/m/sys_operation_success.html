@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>提示信息</title>
+	<meta name="robots" content="noindex,nofollow,noarchive">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="renderer" content="webkit">
+	<link rel="stylesheet" href="_files/vendor/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="_files/vendor/fontawesome-free/css/all.min.css">
+    [#-- 防止攻击 --]
+    [#if nextUrl?? && nextUrl?trim?lower_case?starts_with('javascript:')]
+        [#assign nextUrl = ctx+'/'/]
+    [/#if]
+
+    [#if timeout??]
+        [#if timeout=="-1"]
+            [#--timeout等于-1，不跳转--]
+        [#elseif timeout=="0"]
+            [#--timeout等于0，直接跳转，不延时--]
+            <script>location.href="${(nextUrl!(ctx+'/'))?html}";</script>
+        [#else]
+            <script>setTimeout(function(){location.href="${(nextUrl!(ctx+'/'))?html}";},${timeout});</script>
+        [/#if]
+    [#else]
+        <script>setTimeout(function(){location.href="${(nextUrl!(ctx+'/'))?html}";},3000);</script>
+    [/#if]
+</head>
+<body>
+<div class="container">
+	<div class="row justify-content-md-center">
+		<div class="col-md-8 justify-content-md-center">
+			<div class="card mt-3">
+				<div class="card-header"><i class="fas fa-info-circle text-warning"></i> 提示信息</div>
+				<div class="card-body">
+					[#if .data_model['status_${status}']??]
+					    <h5>${.data_model['status_${status}']?html}</h5>
+					[#elseif messages?? && messages?size>0]
+                        [#list messages as m]
+                        <h5>${m?html}</h5>
+                        [/#list]
+					[#else]
+					    <h5>操作成功</h5>
+					[/#if]
+                    [#if timeout?? && timeout=="-1"]
+                        <a href="${nextUrl!(ctx+'/')}" class="btn btn-secondary btn-sm mt-3">返回</a>
+                    [#else]
+                        <a href="${nextUrl!(ctx+'/')}" class="small text-muted">如果您的浏览器没有自动跳转，请点击这里</a>
+                    [/#if]
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="_files/vendor/jquery/dist/jquery.min.js"></script>
+<script src="_files/vendor/popper.js/dist/umd/popper.min.js"></script>
+<script src="_files/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
+[/#escape]

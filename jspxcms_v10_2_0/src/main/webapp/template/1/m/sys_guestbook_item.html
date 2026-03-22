@@ -1,0 +1,47 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<title>${guestbook.title!substring(guestbook.text,100,'...')} - 留言板 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+	<meta name="keywords" content="留言板">
+	<meta name="description" content="${substring(guestbook.text,200,'...')}">
+	[#include 'inc_meta.html'/]
+	[#include 'inc_css.html'/]
+	[#include 'inc_js.html'/]
+</head>
+<body>
+[#include 'inc_header.html'/]
+<div class="container">
+	<div class="row">
+		<div class="col mt-1">
+			<div class="d-flex align-items-center py-1 border-bottom">
+				<div class="flex-grow-1 h5 mb-0"><a href="${dy}/guestbook">留言板</a></div>
+				<div><a class="btn btn-primary" href="${dy}/guestbook/create" role="button">我要留言</a></div>
+			</div>
+            <div class="my-3">
+                <h5>
+					[#if guestbook.reply]<span class="badge badge-success">已回复</span>[#else]<span class="badge badge-secondary">未回复</span>[/#if]
+					<span class="badge badge-info">${guestbook.type.name}</span>
+					${guestbook.title}
+				</h5>
+                <div class="small text-black-50 mt-2 pb-2 border-bottom">
+                    <i class="far fa-user"></i> ${guestbook.creator.username!guestbook.username!"匿名网友"}
+                    <i class="ml-2 far fa-clock"></i> ${guestbook.creationDate?string('yyyy-MM-dd')}
+                </div>
+                <div class="mt-2">[#noescape]${bbcode(guestbook.text)}[/#noescape]</div>
+            </div>
+			[#if guestbook.replyText??]
+            <div class="border border-warning p-2 my-3">
+				<h5 class="text-danger"><i class="fas fa-comment-dots"></i> 官方回复</h5>
+				<div class="small text-muted"><i class="far fa-user"></i> ${guestbook.replyer.username} <i class="ml-2 far fa-clock"></i> ${guestbook.replyDate?string('yyyy-MM-dd HH:mm')}</div>
+				<div class="my-2">[#noescape]${bbcode(guestbook.replyText!)}[/#noescape]</div>
+            </div>
+			[/#if]
+		</div>
+	</div>
+</div>
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]

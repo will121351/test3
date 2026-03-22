@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>提示信息</title>
+    <meta name="robots" content="noindex,nofollow,noarchive">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="_files/vendor/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="_files/vendor/fontawesome-free/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-8 justify-content-md-center">
+            <div class="card mt-3">
+                <div class="card-header"><i class="fas fa-info-circle text-warning"></i> 提示信息</div>
+                <div class="card-body">
+                    [#if .data_model['status_${status}']??]
+                        <h5>${.data_model['status_${status}']?html}</h5>
+                    [#elseif messages?? && messages?size>0]
+                        [#list messages as m]
+                        <h5>${m?html}</h5>
+                        [/#list]
+                    [#else]
+                        <h5>操作成功</h5>
+                    [/#if]
+                    <a href="javascript:" class="btn btn-secondary btn-sm mt-3" onclick="history.go(-1)">返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="_files/vendor/jquery/dist/jquery.min.js"></script>
+<script src="_files/vendor/popper.js/dist/umd/popper.min.js"></script>
+<script src="_files/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
+[/#escape]

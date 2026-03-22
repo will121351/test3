@@ -1,0 +1,56 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>${node.name} - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+    <meta name="keywords" content="${node.keywords}">
+    <meta name="description" content="${node.description}">
+    [#include 'inc_meta.html'/]
+    [#include 'inc_css.html'/]
+    [#include 'inc_js.html'/]
+</head>
+<body>
+[#include 'inc_header.html'/]
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb col">
+            [#list node.hierarchy as n]<li class="breadcrumb-item"><a href="${n.url}">${n.name}</a></li>[/#list]
+        </ol>
+    </nav>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            [@InfoPage nodeId=node.id isIncludeChildren='true' pageSize=20;pagedList]
+            <div class="table-responsive text-nowrap">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">职位名称</th>
+                        <th scope="col">公司名称</th>
+                        <th scope="col">工作地点</th>
+                        <th scope="col">发布日期</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    [#list pagedList.content as bean]
+                    <tr>
+                        <td scope="row"><a href="${bean.url}" title="${bean.title}">${bean.title}</a></td>
+                        <td>${bean.customs['company']}</td>
+                        <td>${bean.customs['location']}</td>
+                        <td>${bean.publishDate?string('yyyy-MM-dd')}</td>
+                    </tr>
+                    [/#list]
+                    </tbody>
+                </table>
+            </div>
+            [#include 'page.html'/]
+            [/@InfoPage]
+        </div>
+    </div>
+</div>
+[#include 'inc_footer.html'/]
+</body>
+</html>
+[/#escape]

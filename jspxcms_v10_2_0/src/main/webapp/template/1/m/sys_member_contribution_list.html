@@ -1,0 +1,182 @@
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<title>我的私信 - ${site.fullNameOrName}${global.customs['poweredBy']}</title>
+	[#include 'inc_meta.html'/]
+	[#include 'inc_css.html'/]
+	[#include 'inc_js.html'/]
+</head>
+<body class="bg-light">
+[#include 'inc_header.html'/]
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<div class="media mt-3">
+				<a href="${site.urlFull}/space/${(targetUser!user).id}"><img src="${(targetUser!user).avatarLarge}?d=${.now?datetime}" class="mr-2 mr-lg-3 img-thumbnail" width="120" height="120"></a>
+				<div class="media-body">
+					<h5 class="mt-1 mb-0"><a href="${ctx}/space/${(targetUser!user).id}" class="text-reset">${(targetUser!user).username}</a></h5>
+					<div class="mt-1"><a href="${site.urlFull}/space/${(targetUser!user).id}" class="text-muted">${site.urlFull}/space/${(targetUser!user).id}</a></div>
+					<div class="mt-1">${(targetUser!user).bio!"还没有填写个人简介"}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-3 mt-3">
+			<div class="list-group">
+				[#include 'sys_member_my_left.html'/]
+				<script>$('#leftMyMessage').addClass('active');</script>
+			</div>
+		</div>
+		<div class="col-lg-9">
+			<div class="px-3 mt-3 bg-white border">
+				<div class="py-2 border-bottom d-flex align-items-center">
+					<h5 class="flex-grow-1 mb-0">我的私信</h5>
+					<a class="btn btn-primary btn-sm" href="message/send">发送私信</a>
+				</div>
+				<div>
+					[@MessagePage receiverId=user.id;pagedList]
+					[#if pagedList.totalElements gt 0]
+					<ul class="list-group list-group-flush">
+						[#list pagedList.content as bean]
+						<li class="list-group-item px-0">
+							<div class="d-flex">
+								<div><a href="${ctx}/space/${bean[1].id}"><img src="${bean[1].avatarSmall}" class="img-thumbnail" width="50" height="50"></a></div>
+								<div class="ml-2">
+									<div>
+										<a href="${ctx}/space/${bean[1].id}">${bean[1].username}</a>
+										[#if bean[7] gt 0]<span class="badge badge-danger">${bean[7]}</span>[/#if]
+										<span class="ml-1 text-muted small">${prettyTime(bean[0].sendTime)}</span>
+									</div>
+									<div>${bean[0].title}</div>
+								</div>
+							</div>
+							<div class="text-right small"><a href="message/contact/${bean[1].id}">共有 ${bean[6]} 条私信</a><a href="message/delete?ids=${bean[1].id}" class="ml-2">删除</a></div>
+						</li>
+						[/#list]
+					</ul>
+					<div>[#include 'page.html'/]</div>
+					[/#if]
+					[/@MessagePage]
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+[/#escape]
+
+
+[#--
+<!doctype html>
+[#escape x as (x)!?html]
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>${user.username}_${site.fullNameOrName}${global.customs['poweredBy']}</title>
+<meta name="keywords" content="${node.keywords}"/>
+<meta name="description" content="${node.description}"/>
+<script>
+$(function(){
+	$("#validForm").validate();
+});
+
+function deleteInfo(ids) {
+    if(confirm('您确定删除吗？')) {
+        $.post('${ctx}/my/contribution/delete',{"ids":ids, "responseType":"ajax"}, function(data) {
+            location.reload();
+        });
+    }
+}
+</script>
+</head>
+<body style="background-color:#f4f4f4;">
+<div class="user-top">
+	<div class="w center c999" style="height:32px;line-height:32px;">
+		<div class="left">
+			<a class="topa ml5" href="${ctx}/" target="_blank">首页</a>
+			<a class="topa ml5" href="${ctx}/sitemap" target="_blank">网站地图</a>
+			<a class="topa ml5" href="${ctx}/rss">RSS订阅</a>
+			<a class="topa ml5" href="${ctx}/tags">TAGS标签</a>
+		</div>
+		<div class="right">
+			<script type="text/javascript" src="${ctx}/login_include?d=${.now?time}"></script>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+<div class="w center mt10 oh">
+	[#include 'sys_member_my_header.html'/]
+</div>
+<div class="w center mt10 oh">
+	<div class="left" style="width:240px;">
+		<div class="user-box">
+			<div class="user-box-head">账号管理</div>
+			<div class="user-box-body">
+				[#include 'sys_member_my_left.html'/]
+			</div>
+		</div>
+	</div>
+	<div class="right user-box" style="width:740px;">
+		<div class="user-box-head">稿件列表</div>
+		[@InfoPage userId=user.id pageSize='10' status='1,A,B,C,D' sort='publishDate desc';pagedList]
+		<div style="padding:5px 12px;">
+			<table class="table-list">
+				<thead>
+					<tr>
+						<th width="40">ID</th>
+						<th>标题</th>
+						<th width="50">状态</th>
+						<th width="60">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					[#list pagedList.content as info]
+					<tr>
+						<td>${info.id}</td>
+						<td>
+							[#if info.status=='A']
+								<a href="${info.url}" class="ua" target="_blank">${substring(info.title,20,'...')}</a>
+							[#else]
+								${substring(info.title,20,'...')}
+							[/#if]
+						</td>
+						<td>[@s.message code='info.status.${info.status}'/]</td>
+						<td>
+							[#if info.status == 'B' || info.status == 'C' || info.status == 'D']
+							<a href="${ctx}/my/contribution/update/${info.id}" class="op">修改</a>
+							<a href="javascript:" class="op" onclick="deleteInfo(${info.id})">删除</a>
+							[#else]
+							<span style="color:#999;background-color:#ddd;">修改</span>
+							<span style="color:#999;background-color:#ddd;">删除</span>
+							[/#if]
+						</td>
+					</tr>
+					[/#list]
+				</tbody>
+			</table>
+			<div style="padding:15px 0;">
+				[#include "page.html"/]
+			</div>
+		</div>
+		[/@InfoPage]
+	</div>
+</div>
+<div style="border-top:1px solid #e6e6e6;padding-bottom:20px;margin-top:30px;"></div>
+<div class="w center text-center">
+	<div class="powered">
+		<span>Powered by <strong style="font-size:12px"><a href="http://www.jspxcms.com" target="_blank" class="c-666 a-hover">Jspxcms</a></strong></span>
+    <span>&copy; 2010-2017 Jspxcms All Rights Reserved</span>
+	</div>
+	<div class="copyright">
+		<span>${site.customs['company']} 版权所有</span>
+		<span><a href="http://www.miibeian.gov.cn" target="_blank" class="icp c-666 a-hover">${site.customs['icp']}</a></span>
+	</div>
+</div>
+</body>
+</html>
+[/#escape]
+--]
